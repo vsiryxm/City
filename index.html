@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<head>
+<meta charset="utf-8" />
+<meta author="simon(QQ42564096)" />
+<title>2015最新省市地区数据级联效果</title>
+<script src="http://libs.baidu.com/jquery/1.9.0/jquery.js"></script>
+<script type="text/javascript" src="./js/city.js"></script>
+</head>
+
+<body>
+<select name="province" id="province">
+	<option value="">=请选择=</option>
+</select>
+<select name="city" id="city">
+  <option value="">=请选择=</option>
+</select>
+<select name="area" id="area">
+  <option value="">=请选择=</option>
+</select>
+<script type="text/javascript">
+    $(document).ready(function(){
+        var init_prov = '320000';   //江苏省
+        var init_city = '320500';   //苏州市
+        var init_area = '320508';   //姑苏区
+        var first_option = "<option value=''>=请选择=</option>";
+        get_province();
+        if(init_city != '' && init_city !=undefined) get_city(init_prov);
+        if(init_area != '' && init_area !=undefined) get_area(init_city);
+
+        $("select[name='province']").change(function(){
+            $("select[name='city']").html(first_option);
+            $("select[name='area']").html(first_option);
+            init_prov = '', init_city='', init_area='';
+            get_city($(this).val());
+        });
+        $("select[name='city']").change(function(){
+            get_area($(this).val());
+        });
+        //获取省份
+        function get_province(){
+            $("select[name='province']").html();
+            var province = first_option;
+            $(_city_list).each(function(index){
+                if(0 == _city_list[index].parent_id){
+                    province = province + "<option value='" + _city_list[index].area_id + "'>"+ _city_list[index].area_name +"</option>";
+                }
+                if(init_prov !=undefined) province = province.replace(eval("/value=\'"+init_prov+"\'/"),"value='"+init_prov+"' selected");
+            });
+            $("select[name='province']").html(province);
+        }
+        //获取城市
+        function get_city(pid){
+            var city = first_option;
+            var curr_prov = pid;
+            $(_city_list).each(function(index){
+                if(curr_prov == _city_list[index].parent_id){
+                    city = city + "<option value='" + _city_list[index].area_id + "'>"+ _city_list[index].area_name +"</option>";
+                }
+            });
+            if(init_city !=undefined) city = city.replace(eval("/value=\'"+init_city+"\'/"),"value='"+init_city+"' selected");
+            $("select[name='city']").html(city);
+            return true;
+        }
+        //获取区域
+        function get_area(cid){
+            var area = first_option;
+            var curr_city = cid;
+            $(_city_list).each(function(index){
+                if(curr_city == _city_list[index].parent_id){
+                    area = area + "<option value='" + _city_list[index].area_id + "'>"+ _city_list[index].area_name +"</option>";
+                }
+            });
+            if(init_area !=undefined) area = area.replace(eval("/value=\'"+init_area+"\'/"),"value='"+init_area+"' selected");
+            $("select[name='area']").html(area);
+            return true;
+        }
+    });
+</script>
+</body>
+</html>
